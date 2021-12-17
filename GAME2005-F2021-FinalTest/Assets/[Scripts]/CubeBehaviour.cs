@@ -63,7 +63,6 @@ public class CubeBehaviour : MonoBehaviour
     private MeshFilter meshFilter;
     public Bounds bounds;
     public bool isGrounded;
-    public bool isExitCube;
 
 
     // Start is called before the first frame update

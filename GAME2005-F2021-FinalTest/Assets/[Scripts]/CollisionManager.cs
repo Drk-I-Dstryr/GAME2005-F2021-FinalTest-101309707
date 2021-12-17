@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class CollisionManager : MonoBehaviour
@@ -99,16 +98,61 @@ public class CollisionManager : MonoBehaviour
             s.collisionNormal = face;
             //s.isColliding = true;
 
-            if (b.isExitCube == true)
+            
+            Reflect(s);
+        }
+
+    }
+
+    public static void CheckCubeBulletAABB(BulletBehaviour s, CubeBehaviour b)
+    {
+        // get box closest point to sphere center by clamping
+        var x = Mathf.Max(b.min.x, Mathf.Min(s.transform.position.x, b.max.x));
+        var y = Mathf.Max(b.min.y, Mathf.Min(s.transform.position.y, b.max.y));
+        var z = Mathf.Max(b.min.z, Mathf.Min(s.transform.position.z, b.max.z));
+
+        var distance = Math.Sqrt((x - s.transform.position.x) * (x - s.transform.position.x) +
+                                 (y - s.transform.position.y) * (y - s.transform.position.y) +
+                                 (z - s.transform.position.z) * (z - s.transform.position.z));
+
+        if ((distance < s.radius) && (!s.isColliding))
+        {
+            // determine the distances between the contact extents
+            float[] distances = {
+                (b.max.x - s.transform.position.x),
+                (s.transform.position.x - b.min.x),
+                (b.max.y - s.transform.position.y),
+                (s.transform.position.y - b.min.y),
+                (b.max.z - s.transform.position.z),
+                (s.transform.position.z - b.min.z)
+            };
+
+            float penetration = float.MaxValue;
+            Vector3 face = Vector3.zero;
+
+            // check each face to see if it is the one that connected
+            for (int i = 0; i < 6; i++)
             {
-                SceneManager.LoadScene(0);
+                if (distances[i] < penetration)
+                {
+                    // determine the penetration distance
+                    penetration = distances[i];
+                    face = faces[i];
+                }
             }
+
+            s.penetration = penetration;
+            s.collisionNormal = face;
+            //s.isColliding = true;
+
 
             Reflect(s);
         }
 
     }
-    
+
+
+
     // This helper function reflects the bullet when it hits an AABB face
     private static void Reflect(BulletBehaviour s)
     {

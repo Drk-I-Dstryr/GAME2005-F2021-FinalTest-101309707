@@ -35,8 +35,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void _Move()
     {
-        if (isGrounded)
-        {
+        //if (isGrounded)
+        //{
             if (Input.GetAxisRaw("Horizontal") > 0.0f)
             {
                 // move right
@@ -65,13 +65,12 @@ public class PlayerBehaviour : MonoBehaviour
             body.velocity = new Vector3(body.velocity.x, 0.0f, body.velocity.z); // remove y
             
 
-            if (Input.GetAxisRaw("Jump") > 0.0f)
+            if (Input.GetAxisRaw("Jump") > 0.0f && isGrounded == true)
             {
-                body.velocity = transform.up * speed * 0.1f * Time.deltaTime;
+                body.velocity = transform.up * speed * 0.5f * Time.deltaTime;
             }
 
             transform.position += body.velocity;
-        }
     }
 
 
