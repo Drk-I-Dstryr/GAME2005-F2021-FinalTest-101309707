@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class CollisionManager : MonoBehaviour
@@ -98,7 +99,11 @@ public class CollisionManager : MonoBehaviour
             s.collisionNormal = face;
             //s.isColliding = true;
 
-            
+            if (b.isExitCube == true)
+            {
+                SceneManager.LoadScene(0);
+            }
+
             Reflect(s);
         }
 
